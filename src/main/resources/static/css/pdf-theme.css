@@ -1,0 +1,338 @@
+/* ==========================================================
+   DevTracker PDF Theme
+   Optimized for OpenHTMLToPDF (Flying Saucer engine)
+   ========================================================== */
+
+/* ==========================================================
+   PAGE
+   ========================================================== */
+
+@page {
+    size: A3;
+
+    @bottom-center {
+        content: "Page " counter(page);
+        font-size: 10pt;
+        color: #777777;
+        font-family: "Noto Sans JP", Arial, sans-serif;
+    }
+}
+
+/* ==========================================================
+   BODY
+   ========================================================== */
+
+body {
+    font-family: "Noto Sans JP", Arial, sans-serif;
+    color: #222;
+    font-size: 10pt;
+    line-height: 1.55;
+    text-align: justify;
+}
+
+/* ==========================================================
+   HEADINGS
+   Kept together with the content that follows them.
+   ========================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+}
+
+h1 + *, h2 + *, h3 + *, h4 + *, h5 + *, h6 + * {
+    page-break-before: avoid;
+}
+
+h1 {
+    color: #1E3A8A;
+    font-size: 22pt;
+    border-bottom: 3px solid #2563EB;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+h2 {
+    color: #2563EB;
+    font-size: 16pt;
+    margin-top: 30px;
+    margin-bottom: 12px;
+}
+
+h3 {
+    color: #374151;
+    font-size: 13pt;
+    margin-top: 22px;
+    margin-bottom: 10px;
+}
+
+h4 {
+    color: #4B5563;
+    font-size: 11pt;
+    margin-top: 18px;
+    margin-bottom: 8px;
+}
+
+/* ==========================================================
+   PARAGRAPHS
+   Note: orphans/widows are not implemented by OpenHTMLToPDF
+   and were removed — they had no effect.
+   ========================================================== */
+
+p {
+    margin-bottom: 6px;
+}
+
+/* ==========================================================
+   LINKS
+   ========================================================== */
+
+a {
+    color: #2563EB;
+    text-decoration: none;
+}
+
+/* ==========================================================
+   INLINE CODE
+   ========================================================== */
+
+code {
+    font-weight: bold;
+    color: #B45309;
+    background: #F3F4F6;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: Consolas, monospace;
+    font-size: 95%;
+}
+
+/* ==========================================================
+   CODE BLOCKS
+   Allowed to span pages (long snippets are common in lessons).
+   ========================================================== */
+
+pre {
+    background: #1F2937;
+    color: #E5E7EB;
+    padding: 14px 16px;
+    margin: 22px 0;
+    border-radius: 8px;
+    font-family: Consolas, monospace;
+    font-size: 8pt;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    page-break-inside: auto;
+}
+
+pre code {
+    padding: 0;
+    background: none;
+    color: inherit;
+    font-weight: normal;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+/* ==========================================================
+   TABLES
+   thead repeats automatically on OpenHTMLToPDF when a table
+   spans multiple pages, as long as table-layout allows it to
+   break (page-break-inside must stay "auto" on <table>, and
+   only individual rows are protected with "avoid").
+   ========================================================== */
+
+table {
+    width: auto;
+    max-width: 100%;
+    margin: 20px auto;
+    table-layout: auto;
+    border-collapse: collapse;
+    page-break-inside: auto;
+    font-size: 9pt;
+}
+
+thead {
+    display: table-header-group;
+}
+
+tfoot {
+    display: table-footer-group;
+}
+
+th {
+    background: #8291c1;
+    color: white;
+    padding: 9px;
+    text-align: left;
+    font-size: 10pt;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+td {
+    border: 1px solid #D9D9D9;
+    padding: 7px;
+    vertical-align: top;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+tr {
+    page-break-inside: avoid;
+}
+
+tbody tr:nth-child(even) {
+    background: #F8FAFC;
+}
+
+/* ==========================================================
+   LISTS
+   ========================================================== */
+
+ul, ol {
+    margin: 12px 0;
+    padding-left: 24px;
+}
+
+li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+    page-break-inside: avoid;
+}
+
+/* ==========================================================
+   BLOCKQUOTE
+   ========================================================== */
+
+blockquote {
+    border-left: 4px solid #2563EB;
+    background: #F8FAFF;
+    padding: 12px 18px;
+    margin: 20px 0;
+    color: #555;
+    font-style: italic;
+    page-break-inside: avoid;
+}
+
+/* ==========================================================
+   HORIZONTAL RULE
+   ========================================================== */
+
+hr {
+    border: none;
+    border-top: 1px solid #DDDDDD;
+    margin: 26px 0;
+}
+
+/* ==========================================================
+   IMAGES
+   ========================================================== */
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 20px auto;
+    border: 1px solid #DDDDDD;
+    border-radius: 4px;
+    page-break-inside: avoid;
+}
+
+/* ==========================================================
+   CALLOUT BOXES
+   One consolidated rule set — all boxes that should never be
+   split across a page break.
+   ========================================================== */
+
+.callout,
+.note,
+.warning,
+.success,
+.tip,
+.summary,
+.important,
+.practice-block,
+.quick-revision {
+    page-break-inside: avoid;
+    border-radius: 6px;
+    margin: 18px 0;
+    padding: 14px 18px;
+}
+
+.callout,
+.note {
+    background: #EFF6FF;
+    border-left: 5px solid #2563EB;
+}
+
+.warning {
+    background: #FFF7ED;
+    border-left: 5px solid #F59E0B;
+}
+
+.success {
+    background: #ECFDF5;
+    border-left: 5px solid #10B981;
+}
+
+.tip {
+    background: #F0FDFA;
+    border-left: 5px solid #14B8A6;
+}
+
+.summary,
+.important {
+    background: #FEF2F2;
+    border-left: 5px solid #EF4444;
+}
+
+.practice-block {
+    background: #F8FFF9;
+    border: 1px solid #D7F3DD;
+    border-left: 5px solid #16A34A;
+}
+
+.quick-revision {
+    background: #F3F8FF;
+    border: 2px solid #2563EB;
+    padding: 18px;
+    margin: 30px 0;
+}
+
+.quick-revision h2 {
+    margin-top: 0;
+}
+
+/* ==========================================================
+   STRONG
+   ========================================================== */
+
+strong {
+    color: #111827;
+}
+
+/* ==========================================================
+   LESSON SECTIONS
+   IMPORTANT: no page-break-inside:avoid here. A <section> in a
+   100-500 page lesson document is routinely taller than one
+   page; forcing it to avoid breaking causes huge blank gaps or
+   overflow. Individual pieces (callouts, tables rows, list
+   items, images) already protect themselves above.
+   ========================================================== */
+
+section {
+    margin-bottom: 24px;
+}
+
+/* ==========================================================
+   PAGE BREAK UTILITIES
+   ========================================================== */
+
+.page-break {
+    page-break-before: always;
+}
+
+.no-break {
+    page-break-inside: avoid;
+}

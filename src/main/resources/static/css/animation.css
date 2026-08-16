@@ -1,0 +1,82 @@
+/* ============================================================
+   ANIMATED BACKGROUND DESIGN — coffee/amber theme
+   Self-contained so it works without touching auth.css.
+   - Corner blobs: slow breathing glow (matches register page)
+   - Dashed paths: gentle flowing dash motion
+   - Dot nodes: soft pulsing glow
+   - Badge icons: light floating bob, staggered per badge
+   Respects prefers-reduced-motion.
+   ============================================================ */
+
+.auth-bg-svg .corner-blob {
+	transform-box: fill-box;
+	transform-origin: center;
+}
+.auth-bg-svg .corner-blob-orange {
+	animation: blobDriftOrange 14s ease-in-out infinite;
+}
+.auth-bg-svg .corner-blob-blue {
+	animation: blobDriftBlue 17s ease-in-out infinite;
+}
+
+@keyframes blobDriftOrange {
+	0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+	50%      { transform: translate(14px, -10px) scale(1.15); opacity: 0.22; }
+}
+@keyframes blobDriftBlue {
+	0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.13; }
+	50%      { transform: translate(-12px, 12px) scale(1.12); opacity: 0.2; }
+}
+
+.auth-bg-svg .bp-orange,
+.auth-bg-svg .bp-blue {
+	animation: dashFlow 7s linear infinite;
+}
+@keyframes dashFlow {
+	to { stroke-dashoffset: -200; }
+}
+
+.auth-bg-svg .pn {
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: dotGlow 3.2s ease-in-out infinite;
+}
+.auth-bg-svg .pn-pulse {
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: dotPulse 2.4s ease-in-out infinite;
+}
+@keyframes dotGlow {
+	0%, 100% { opacity: 0.45; }
+	50%      { opacity: 1; }
+}
+@keyframes dotPulse {
+	0%, 100% { transform: scale(1);   opacity: 0.6; }
+	50%      { transform: scale(1.8); opacity: 1; }
+}
+
+.auth-bg-svg .badge-anim-1,
+.auth-bg-svg .badge-anim-2,
+.auth-bg-svg .badge-anim-3,
+.auth-bg-svg .badge-anim-4 {
+	transform-box: fill-box;
+	transform-origin: center;
+	animation-name: badgeFloat;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+}
+.auth-bg-svg .badge-anim-1 { animation-duration: 5s;   animation-delay: 0s; }
+.auth-bg-svg .badge-anim-2 { animation-duration: 6s;   animation-delay: .6s; }
+.auth-bg-svg .badge-anim-3 { animation-duration: 5.5s; animation-delay: 1.2s; }
+.auth-bg-svg .badge-anim-4 { animation-duration: 6.5s; animation-delay: .3s; }
+
+@keyframes badgeFloat {
+	0%, 100% { transform: translateY(0); }
+	50%      { transform: translateY(-10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.auth-bg-svg * {
+		animation: none !important;
+	}
+}
