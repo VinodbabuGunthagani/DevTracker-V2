@@ -3,92 +3,92 @@ document.addEventListener("DOMContentLoaded", loadDashboard);
 
 async function loadDashboard() {
 
-    try {
+	try {
 
-        const response = await fetch("/api/dashboard", {
-            method: "GET",
-            credentials: "include"
-        });
-
-
-        // User is not authenticated
-        if (response.status === 401) {
-
-            window.location.href = "/login.html";
-            return;
-        }
+		const response = await fetch("/api/dashboard", {
+			method: "GET",
+			credentials: "include"
+		});
 
 
-        if (!response.ok) {
+		// User is not authenticated
+		if (response.status === 401) {
 
-            throw new Error(
-                "Failed to load dashboard"
-            );
-        }
-
-
-        const data = await response.json();
+			window.location.href = "/login.html";
+			return;
+		}
 
 
-        // =========================
-        // USER
-        // =========================
+		if (!response.ok) {
 
-        document.getElementById("initials").textContent =
-            data.initials || "";
-
-        document.getElementById("sidebarUserName").textContent =
-            data.userName || "";
-
-        const firstName =
-            data.userName
-                ? data.userName.trim().split(/\s+/)[0]
-                : "";
-
-        document.getElementById("welcomeName").textContent =
-            firstName;
+			throw new Error(
+				"Failed to load dashboard"
+			);
+		}
 
 
-        // =========================
-        // STATISTICS
-        // =========================
-
-        document.getElementById("totalRoadmaps").textContent =
-            data.total ?? 0;
-
-        document.getElementById("avgProgress").textContent =
-            (data.avgProgress ?? 0) + "%";
-
-        document.getElementById("completedRoadmaps").textContent =
-            data.completed ?? 0;
-
-        document.getElementById("aiCount").textContent =
-            data.aiCount ?? 0;
+		const data = await response.json();
 
 
-        // =========================
-        // ROADMAP COUNT
-        // =========================
+		// =========================
+		// USER
+		// =========================
 
-        document.getElementById("roadmapCount").textContent =
-            `${data.total ?? 0} active`;
+		document.getElementById("initials").textContent =
+			data.initials || "";
+
+		document.getElementById("sidebarUserName").textContent =
+			data.userName || "";
+
+		const firstName =
+			data.userName
+				? data.userName.trim().split(/\s+/)[0]
+				: "";
+
+		document.getElementById("welcomeName").textContent =
+			firstName;
 
 
-        // =========================
-        // ROADMAP CARDS
-        // =========================
+		// =========================
+		// STATISTICS
+		// =========================
 
-        renderRoadmaps(data.roadmaps || []);
+		document.getElementById("totalRoadmaps").textContent =
+			data.total ?? 0;
+
+		document.getElementById("avgProgress").textContent =
+			(data.avgProgress ?? 0) + "%";
+
+		document.getElementById("completedRoadmaps").textContent =
+			data.completed ?? 0;
+
+		document.getElementById("aiCount").textContent =
+			data.aiCount ?? 0;
 
 
-    } catch (error) {
+		// =========================
+		// ROADMAP COUNT
+		// =========================
 
-        console.error(
-            "Dashboard loading error:",
-            error
-        );
+		document.getElementById("roadmapCount").textContent =
+			`${data.total ?? 0} active`;
 
-    }
+
+		// =========================
+		// ROADMAP CARDS
+		// =========================
+
+		renderRoadmaps(data.roadmaps || []);
+
+
+	} catch (error) {
+
+		console.error(
+			"Dashboard loading error:",
+			error
+		);
+
+	}
 
 }
 
@@ -96,50 +96,50 @@ async function loadDashboard() {
 
 function renderRoadmaps(roadmaps) {
 
-    const grid =
-        document.getElementById("roadmapGrid");
+	const grid =
+		document.getElementById("roadmapGrid");
 
-    grid.innerHTML = "";
-
-
-    // No roadmaps
-    if (roadmaps.length === 0) {
-
-        const emptyMessage =
-            document.createElement("p");
-
-        emptyMessage.textContent =
-            "No roadmaps yet. Create one to get started.";
-
-        emptyMessage.style.color =
-            "var(--faint)";
-
-        emptyMessage.style.fontSize =
-            "14px";
-
-        emptyMessage.style.gridColumn =
-            "1 / -1";
-
-        grid.appendChild(emptyMessage);
-
-    }
+	grid.innerHTML = "";
 
 
-    // Roadmap cards
-    roadmaps.forEach(roadmap => {
+	// No roadmaps
+	if (roadmaps.length === 0) {
 
-        const card =
-            createRoadmapCard(roadmap);
+		const emptyMessage =
+			document.createElement("p");
 
-        grid.appendChild(card);
+		emptyMessage.textContent =
+			"No roadmaps yet. Create one to get started.";
 
-    });
+		emptyMessage.style.color =
+			"var(--faint)";
+
+		emptyMessage.style.fontSize =
+			"14px";
+
+		emptyMessage.style.gridColumn =
+			"1 / -1";
+
+		grid.appendChild(emptyMessage);
+
+	}
 
 
-    // Add new roadmap card
-    grid.appendChild(
-        createNewRoadmapCard()
-    );
+	// Roadmap cards
+	roadmaps.forEach(roadmap => {
+
+		const card =
+			createRoadmapCard(roadmap);
+
+		grid.appendChild(card);
+
+	});
+
+
+	// Add new roadmap card
+	grid.appendChild(
+		createNewRoadmapCard()
+	);
 
 }
 
@@ -147,35 +147,35 @@ function renderRoadmaps(roadmaps) {
 
 function createRoadmapCard(roadmap) {
 
-    const progress =
-        roadmap.progress ?? 0;
+	const progress =
+		roadmap.progress ?? 0;
 
-    const isDone =
-        progress >= 100;
+	const isDone =
+		progress >= 100;
 
-    const fillClass =
-        isDone
-            ? "high"
-            : progress >= 40
-                ? "medium"
-                : "low";
-
-
-    const card =
-        document.createElement("div");
-
-    card.className = "card";
+	const fillClass =
+		isDone
+			? "high"
+			: progress >= 40
+				? "medium"
+				: "low";
 
 
-    // =========================
-    // BADGES
-    // =========================
+	const card =
+		document.createElement("div");
 
-    let badges = "";
+	card.className = "card";
 
-    if (roadmap.ai) {
 
-        badges += `
+	// =========================
+	// BADGES
+	// =========================
+
+	let badges = "";
+
+	if (roadmap.ai) {
+
+		badges += `
             <span class="badge badge-ai">
                 <i class="ti ti-sparkles"
                    style="font-size:10px"></i>
@@ -183,12 +183,12 @@ function createRoadmapCard(roadmap) {
             </span>
         `;
 
-    }
+	}
 
 
-    if (isDone) {
+	if (isDone) {
 
-        badges += `
+		badges += `
             <span class="badge badge-done">
                 <i class="ti ti-check"
                    style="font-size:10px"></i>
@@ -196,14 +196,14 @@ function createRoadmapCard(roadmap) {
             </span>
         `;
 
-    }
+	}
 
 
-    // =========================
-    // CARD
-    // =========================
+	// =========================
+	// CARD
+	// =========================
 
-    card.innerHTML = `
+	card.innerHTML = `
 
         <div class="card-head">
 
@@ -234,8 +234,8 @@ function createRoadmapCard(roadmap) {
 
         <p class="card-desc">
             ${escapeHtml(
-                roadmap.description || ""
-            )}
+		roadmap.description || ""
+	)}
         </p>
 
 
@@ -291,14 +291,14 @@ function createRoadmapCard(roadmap) {
 
             <div class="card-actions">
 
-                <a
-                    class="btn btn-sm"
-                    href="/openAIRoadmap?id=${roadmap.id}">
+			<a
+			    class="btn btn-sm"
+			    href="/roadmap-view.html?id=${roadmap.id}">
 
-                    <i class="ti ti-map"></i>
-                    Syllabus
+			    <i class="ti ti-map"></i>
+			    Syllabus
 
-                </a>
+			</a>
 
 
                 <a
@@ -327,7 +327,7 @@ function createRoadmapCard(roadmap) {
     `;
 
 
-    return card;
+	return card;
 
 }
 
@@ -335,17 +335,17 @@ function createRoadmapCard(roadmap) {
 
 function createNewRoadmapCard() {
 
-    const card =
-        document.createElement("a");
+	const card =
+		document.createElement("a");
 
-    card.className =
-        "card-empty";
+	card.className =
+		"card-empty";
 
-    card.href =
-        "/create-roadmap.html";
+	card.href =
+		"/create-roadmap.html";
 
 
-    card.innerHTML = `
+	card.innerHTML = `
 
         <i class="ti ti-plus"></i>
 
@@ -356,7 +356,7 @@ function createNewRoadmapCard() {
     `;
 
 
-    return card;
+	return card;
 
 }
 
@@ -364,13 +364,13 @@ function createNewRoadmapCard() {
 
 function editRoadmap(id) {
 
-    // We will connect this to the V2
-    // PUT/PATCH roadmap API later.
+	// We will connect this to the V2
+	// PUT/PATCH roadmap API later.
 
-    console.log(
-        "Edit roadmap:",
-        id
-    );
+	console.log(
+		"Edit roadmap:",
+		id
+	);
 
 }
 
@@ -378,13 +378,13 @@ function editRoadmap(id) {
 
 async function deleteRoadmap(id) {
 
-    // V2 delete API will be connected
-    // after roadmap CRUD migration.
+	// V2 delete API will be connected
+	// after roadmap CRUD migration.
 
-    console.log(
-        "Delete roadmap:",
-        id
-    );
+	console.log(
+		"Delete roadmap:",
+		id
+	);
 
 }
 
@@ -392,11 +392,11 @@ async function deleteRoadmap(id) {
 
 function formatDate(date) {
 
-    if (!date) {
-        return "";
-    }
+	if (!date) {
+		return "";
+	}
 
-    return date;
+	return date;
 
 }
 
@@ -404,19 +404,19 @@ function formatDate(date) {
 
 function escapeHtml(value) {
 
-    if (value === null ||
-        value === undefined) {
+	if (value === null ||
+		value === undefined) {
 
-        return "";
+		return "";
 
-    }
+	}
 
-    const div =
-        document.createElement("div");
+	const div =
+		document.createElement("div");
 
-    div.textContent =
-        value;
+	div.textContent =
+		value;
 
-    return div.innerHTML;
+	return div.innerHTML;
 
 }

@@ -1,10 +1,265 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Syllabus | DevTracker</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/syllabus.css">
+<link rel="stylesheet" href="css/loading.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
 <body>
 
+	<!-- Mobile topbar -->
+	<div class="mobile-topbar">
+		<a class="mobile-logo" data-route="dashboard" href="#"> <i class="ti ti-route"></i> DevTracker
+		</a>
+	</div>
+
+	<div class="layout">
+
+		<!-- Sidebar -->
+		<aside class="sidebar" id="sidebar">
+			<div class="sidebar-logo">
+				<a class="logo-mark" data-route="dashboard" href="#"> <i class="ti ti-route"></i>
+					<div>
+						<div>DevTracker</div>
+						<div class="logo-sub">Learning OS</div>
+					</div>
+				</a>
+			</div>
+			<nav class="nav">
+				<div class="nav-section-label">Menu</div>
+				<a class="nav-item"  href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+				<a class="nav-item" data-route="createRoadmap" href="create-roadmap.html"><i class="ti ti-plus"></i> Create Roadmap</a>
+				<a class="nav-item active" href="#"><i class="ti ti-books"></i> Syllabus</a>
+				<a class="nav-item" data-route="schedule" href="#"><i class="ti ti-calendar-week"></i> Daily Tasks</a>
+				<div class="nav-section-label">Manage</div>
+				<a class="nav-item" data-route="trash" href="#"><i class="ti ti-recycle"></i> Recover Deleted</a>
+			</nav>
+			<div class="sidebar-footer">
+				<div class="user-row">
+					<div class="avatar">
+						<i class="ti ti-user" style="font-size: 15px"></i>
+					</div>
+					<div class="user-info">
+						<div class="user-name" id="userName">Learner</div>
+						<div class="user-plan">Free plan</div>
+					</div>
+					<a href="#" class="logout-btn" id="logoutBtn" title="Logout"><i class="ti ti-logout"></i></a>
+				</div>
+			</div>
+		</aside>
+
+		<!-- Main -->
+		<main class="main">
+
+			<!-- Page state (loading / error) -->
+			<div id="pageState" class="empty-state" role="status">Loading roadmap…</div>
+
+			<!-- Hero -->
+			<div class="syllabus-hero" id="syllabusHero" style="display: none">
+				<div class="hero-breadcrumb">
+					<a data-route="dashboard" href="#">Dashboard</a> <i class="ti ti-chevron-right"></i>
+					<a data-route="aiRoadmaps" href="#">AI Roadmaps</a> <i class="ti ti-chevron-right"></i>
+					<span id="breadcrumbTitle"></span>
+				</div>
+				<div class="hero-ai-pill" id="heroAiPill">
+					<i class="ti ti-sparkles"></i> AI Generated
+				</div>
+				<h1 class="hero-title" id="heroTitle"></h1>
+				<p class="hero-desc" id="heroDesc"></p>
+
+				<div class="hero-overall">
+					<div class="hero-overall-track">
+						<div id="heroProgressFill" class="hero-overall-fill" style="width: 0%"></div>
+					</div>
+					<span id="heroProgressText" class="hero-overall-text">0% complete</span>
+				</div>
+
+				<button type="button" class="hero-stats-toggle" id="heroStatsToggle">
+					<span>View roadmap stats</span> <i class="ti ti-chevron-down"></i>
+				</button>
+
+				<div class="hero-stats">
+					<div class="hero-stat">
+						<span class="hero-stat-val" id="statSubjects">0</span> <span class="hero-stat-label">Subjects</span>
+					</div>
+					<div class="hero-stat">
+						<span class="hero-stat-val" id="statTopics">0</span> <span class="hero-stat-label">Topics</span>
+					</div>
+					<div class="hero-stat">
+						<span class="hero-stat-val" id="statLessons">0</span> <span class="hero-stat-label">Lessons</span>
+					</div>
+					<div class="hero-stat">
+						<span class="hero-stat-val" id="statHours">0</span> <span class="hero-stat-label">Est. Hours</span>
+					</div>
+					<div class="hero-stat">
+						<span id="heroPercentVal" class="hero-stat-val">0%</span> <span class="hero-stat-label">Complete</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="learning-hint" id="learningHint" style="display: none">
+				<button type="button" class="hint-toggle" id="hintToggle">
+					<div class="hint-icon">
+						<i class="ti ti-bulb"></i>
+					</div>
+					<strong>How DevTracker works</strong> <i class="ti ti-chevron-down hint-chevron"></i>
+				</button>
+				<div class="hint-body">
+					<div class="hint-body-inner">
+						<p>Your roadmap is organized like:</p>
+						<div class="hint-tree">
+							<div>📚 Subject</div>
+							<div class="indent">└ 📖 Topic</div>
+							<div class="indent2">└ 🎯 Lesson</div>
+						</div>
+						<p>Lessons are where you learn, track progress, take notes and follow schedules.</p>
+						<p>
+							Creating your own roadmap? Use <a href="#customizeBtn" class="hint-link"> Customize Mode </a>
+							to add Subjects, Topics, and Lessons.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Toolbar -->
+			<div class="toolbar-actions" id="toolbarActions" style="display: none">
+				<button class="btn btn-sm" id="dailyTasksBtn" type="button">
+					<i class="ti ti-calendar-week"></i> Daily Tasks
+				</button>
+				<button class="btn btn-sm" id="generateLearningBtn" type="button">
+					<i class="ti ti-sparkles"></i> Generate All Lessons
+				</button>
+				<button class="btn btn-sm" id="downloadPdfBtn" type="button">
+					<i class="ti ti-file-download"></i> Download Roadmap PDF (0/0)
+				</button>
+				<button class="btn btn-sm" id="customizeBtn" type="button">
+					<i class="ti ti-pencil"></i> Customize
+				</button>
+				<a class="btn btn-sm" data-route="dashboard" href="#"><i class="ti ti-arrow-left"></i> Back</a>
+			</div>
+
+			<!-- Syllabus tree (rendered by js/roadmap-view.js). display:contents keeps
+			     .subject-block elements behaving as direct children of .main -->
+			<div id="syllabusTree" style="display: contents"></div>
+
+			<!-- Add subject panel -->
+			<div class="add-panel" id="addSubjectPanel" style="display: none">
+				<div id="addSubjectBtn" class="add-plus">
+					<i class="ti ti-plus"></i><span>Add Subject</span>
+				</div>
+				<div id="addSubject" class="add-panel1" style="display: none">
+					<div class="add-panel-title">Add new subject</div>
+					<form id="addSubjectForm" class="add-form">
+						<input type="text" name="name" placeholder="Subject name…" required>
+						<button class="btn btn-primary" type="submit">
+							<i class="ti ti-plus"></i> Add subject
+						</button>
+						<button type="button" class="btn" id="addSubjectCancel">Cancel</button>
+					</form>
+				</div>
+			</div>
+
+			<div class="customize-hint" id="customizeHint" style="display: none">
+				💡 Want to change this roadmap? Use <a href="#customizeBtn"> Customize Mode </a>
+				to add, edit, or remove subjects, topics and lessons.
+			</div>
+
+			<button class="fab-expand" id="expandToggleBtn" type="button" style="display: none">
+				<i class="ti ti-chevrons-up"></i> <span>Collapse all</span>
+			</button>
+
+			<!-- ============ AI Generation Modal ============ -->
+			<div class="ai-gen-overlay" id="aiGenModal" style="display: none">
+				<div class="ai-gen-modal">
+					<div class="ai-gen-header">
+						<span class="ai-gen-badge" id="aiGenBadge"><span class="ai-gen-pulse"></span>Generating</span>
+						<h3 id="aiGenTitle">Building your lessons</h3>
+						<p id="aiGenSubtitle">Starting up the AI worker...</p>
+					</div>
+
+					<div class="ai-gen-ring-row">
+						<div class="ai-gen-ring-wrap">
+							<svg viewBox="0 0 100 100">
+								<defs>
+									<linearGradient id="aiRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+										<stop offset="0%" stop-color="#d99a3f" />
+										<stop offset="100%" stop-color="#8f5a15" />
+									</linearGradient>
+								</defs>
+								<circle class="ai-ring-track" cx="50" cy="50" r="42"></circle>
+								<circle id="aiGenRing" class="ai-ring-fill" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+							</svg>
+							<div class="ai-ring-label">
+								<span id="aiGenPercent">0%</span>
+							</div>
+						</div>
+
+						<div class="ai-gen-current">
+							<div class="ai-gen-row">
+								<span class="label">Subject</span><span class="value" id="aiGenSubject">—</span>
+							</div>
+							<div class="ai-gen-row">
+								<span class="label">Topic</span><span class="value" id="aiGenTopic">—</span>
+							</div>
+							<div class="ai-gen-row">
+								<span class="label">Queued</span><span class="value" id="aiGenCount">0 / 0</span>
+							</div>
+							<div class="ai-gen-row" style="font-weight: bold">
+								<span class="label">Done</span><span class="value" id="aiGenDone">0/0</span>
+							</div>
+						</div>
+					</div>
+
+					<div id="aiGenTaskList" class="ai-gen-tasklist"></div>
+
+					<button type="button" class="ai-gen-close" id="aiGenCloseBtn" style="display: none">
+						<i class="ti ti-check"></i> Done — refresh syllabus
+					</button>
+				</div>
+			</div>
+
+			<!-- ============ Roadmap PDF Readiness Modal ============ -->
+			<div class="ai-gen-overlay" id="pdfReadyModal" style="display: none">
+				<div class="ai-gen-modal" id="pdfReadyModalBox">
+					<div class="ai-gen-header">
+						<span class="ai-gen-badge error"><i class="ti ti-file-alert"></i> Roadmap PDF</span>
+						<h3>Roadmap PDF</h3>
+						<p id="pdfReadyBody">
+							Only <span id="pdfReadyGenerated">0</span> of <span id="pdfReadyTotal">0</span> lessons have been generated.
+						</p>
+					</div>
+
+					<p style="margin: 0 0 4px; font-size: 13px; color: var(--text-muted, #7a7267); line-height: 1.5;">
+						The roadmap PDF includes every lesson in the roadmap. Please generate the remaining lessons before downloading.
+					</p>
+
+					<div style="display: flex; gap: 10px; margin-top: 18px;">
+						<button type="button" class="btn btn-primary" id="pdfReadyGenerateBtn" style="flex: 1;">
+							<i class="ti ti-sparkles"></i> Generate Remaining Lessons
+						</button>
+						<button type="button" class="btn" id="pdfReadyCancelBtn">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+
+	<!-- Bottom tab bar (mobile only — sidebar nav mirrored here) -->
+	<nav class="bottom-nav">
+		<a class="bn-item" data-route="dashboard" href="#"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+		<a class="bn-item" data-route="createRoadmap" href="#"><i class="ti ti-plus"></i>New</a>
+		<a class="bn-item active" href="#"><i class="ti ti-books"></i> Syllabus</a>
+		<a class="bn-item" data-route="schedule" href="#"><i class="ti ti-calendar-week"></i> Schedule</a>
+	</nav>
+
+	<script src="js/loading.js"></script>
+	<div id="loadingContainer"></div>
+	<script src="js/roadmap-view.js"></script>
 </body>
 </html>

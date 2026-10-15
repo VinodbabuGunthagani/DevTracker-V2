@@ -10,10 +10,14 @@ import com.devtracker.backend.model.Subject;
 import com.devtracker.backend.model.Topic;
 import com.devtracker.backend.model.SubTopic;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -37,15 +41,48 @@ public class OpenAIRoadmapController {
         this.subTopicDAO = subTopicDAO;
     }
 
+    // Existing endpoint: returns the server-rendered view
     @GetMapping("/openAIRoadmap")
     public String openAIRoadmap(
             @RequestParam("id") int roadmapId,
             Model model) {
 
-        Roadmap roadmap = roadmapDAO.getRoadmapById(roadmapId);
+        Roadmap roadmap = loadRoadmapHierarchy(roadmapId);
 
         if (roadmap == null) {
             return "redirect:/dashboard";
+        }
+
+        model.addAttribute("roadmap", roadmap);
+
+        return "ai-roadmap-view";
+    }
+
+    // New endpoint: returns the roadmap hierarchy as JSON
+    @GetMapping("/api/roadmaps/{id}")
+    @ResponseBody
+    public Roadmap getRoadmapJson(
+            @PathVariable("id") int roadmapId) {
+
+        Roadmap roadmap = loadRoadmapHierarchy(roadmapId);
+
+        if (roadmap == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Roadmap not found"
+            );
+        }
+
+        return roadmap;
+    }
+
+    // Shared logic for loading the roadmap and its hierarchy
+    private Roadmap loadRoadmapHierarchy(int roadmapId) {
+
+        Roadmap roadmap = roadmapDAO.getRoadmapById(roadmapId);
+
+        if (roadmap == null) {
+            return null;
         }
 
         List<Subject> subjects =
@@ -75,8 +112,6 @@ public class OpenAIRoadmapController {
 
         roadmap.setSubjects(subjects);
 
-        model.addAttribute("roadmap", roadmap);
-
-        return "ai-roadmap-view";
+        return roadmap;
     }
 }
