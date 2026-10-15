@@ -457,14 +457,14 @@
                     I agree to the
 
                     <a class="forgot-link"
-                       href="terms.html">
+                       href="#">
                         Terms
                     </a>
 
                     &amp;
 
                     <a class="forgot-link"
-                       href="privacy.html">
+                       href="#">
                         Privacy Policy
                     </a>
 
@@ -722,21 +722,10 @@ async function handleRegisterSubmit(event) {
 
 
 function oauthLogin(provider) {
-
     if (provider === "google") {
-
-        /*
-         * Google authentication will be
-         * migrated later.
-         */
-
-        window.location.href =
-            "/api/auth/google";
-
+        window.location.href = "/google-login";
     }
-
 }
-
 
 /* Loading component */
 

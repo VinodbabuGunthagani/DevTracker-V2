@@ -7,6 +7,16 @@ public class User {
     private String email;
     private String password;
 
+    // Google Login fields
+    private String googleId;
+    private String authProvider;
+    private String profilePicture;
+
+
+    // ============================================================
+    // ID
+    // ============================================================
+
     public int getId() {
         return id;
     }
@@ -14,6 +24,11 @@ public class User {
     public void setId(int id) {
         this.id = id;
     }
+
+
+    // ============================================================
+    // NAME
+    // ============================================================
 
     public String getName() {
         return name;
@@ -23,6 +38,11 @@ public class User {
         this.name = name;
     }
 
+
+    // ============================================================
+    // EMAIL
+    // ============================================================
+
     public String getEmail() {
         return email;
     }
@@ -31,11 +51,55 @@ public class User {
         this.email = email;
     }
 
+
+    // ============================================================
+    // PASSWORD
+    // ============================================================
+
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    // ============================================================
+    // GOOGLE ID
+    // ============================================================
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+
+    // ============================================================
+    // AUTH PROVIDER
+    // ============================================================
+
+    public String getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(String authProvider) {
+        this.authProvider = authProvider;
+    }
+
+
+    // ============================================================
+    // PROFILE PICTURE
+    // ============================================================
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

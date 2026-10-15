@@ -20,32 +20,35 @@ public class RememberTokenDAO {
         this.dataSource = dataSource;
     }
 
-    // Save a remember-me token
-    public boolean saveToken(int userId, String tokenHash, Timestamp expiresAt) {
+    // SAVE A REMEMBER-ME TOKEN
+    public boolean saveToken(
+            int userId,
+            String tokenHash,
+            Timestamp expiresAt) {
 
         String sql = """
-                INSERT INTO remember_tokens(user_id, token_hash, expires_at)
+                INSERT INTO remember_tokens
+                    (user_id, token_hash, expires_at)
                 VALUES (?, ?, ?)
                 """;
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            statement.setInt(1, userId);
-            statement.setString(2, tokenHash);
-            statement.setTimestamp(3, expiresAt);
+            ps.setInt(1, userId);
+            ps.setString(2, tokenHash);
+            ps.setTimestamp(3, expiresAt);
 
-            return statement.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
-
             e.printStackTrace();
-            return false;
         }
+
+        return false;
     }
 
-
-    // Find the user using a remember token
+    // FIND USER USING A REMEMBER TOKEN
     public User findUserByToken(String tokenHash) {
 
         String sql = """
@@ -56,12 +59,12 @@ public class RememberTokenDAO {
                 AND rt.expires_at > CURRENT_TIMESTAMP
                 """;
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            statement.setString(1, tokenHash);
+            ps.setString(1, tokenHash);
 
-            try (ResultSet rs = statement.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
 
                 if (rs.next()) {
 
@@ -77,52 +80,53 @@ public class RememberTokenDAO {
             }
 
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 
         return null;
     }
 
-
-    // Delete one token
+    // DELETE ONE TOKEN
     public boolean deleteToken(String tokenHash) {
 
-        String sql =
-                "DELETE FROM remember_tokens WHERE token_hash = ?";
+        String sql = """
+                DELETE FROM remember_tokens
+                WHERE token_hash = ?
+                """;
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            statement.setString(1, tokenHash);
+            ps.setString(1, tokenHash);
 
-            return statement.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
-
             e.printStackTrace();
-            return false;
         }
+
+        return false;
     }
 
-
-    // Delete all remember-me sessions of a user
+    // DELETE ALL REMEMBER-ME TOKENS FOR A USER
     public boolean deleteUserTokens(int userId) {
 
-        String sql =
-                "DELETE FROM remember_tokens WHERE user_id = ?";
+        String sql = """
+                DELETE FROM remember_tokens
+                WHERE user_id = ?
+                """;
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            statement.setInt(1, userId);
+            ps.setInt(1, userId);
 
-            return statement.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
-
             e.printStackTrace();
-            return false;
         }
+
+        return false;
     }
 }

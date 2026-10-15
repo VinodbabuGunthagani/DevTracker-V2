@@ -298,7 +298,7 @@
                 </label>
 
                 <a class="forgot-link"
-                   href="forgot-password.html">
+                   href="#">
 
                     Forgot password?
 
@@ -514,19 +514,9 @@ async function handleLoginSubmit(event) {
 
 
 function oauthLogin(provider) {
-
-    if (provider === 'google') {
-
-        /*
-         * Google authentication will be
-         * migrated later.
-         */
-
-        window.location.href =
-            '/api/auth/google';
-
+    if (provider === "google") {
+        window.location.href = "/google-login";
     }
-
 }
 
 
