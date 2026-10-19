@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.devtracker.backend.dao.AITimetableDAO;
 import com.devtracker.backend.dao.RoadmapDAO;
-import com.devtracker.backend.dao.SubjectDAO;
+import com.devtracker.backend.dao.StudyPlanDAO;
+import com.devtracker.backend.model.DailyTask;
 import com.devtracker.backend.model.DashboardData;
 import com.devtracker.backend.model.Roadmap;
 import com.devtracker.backend.model.RoadmapDashboardData;
@@ -16,14 +16,12 @@ import com.devtracker.backend.model.RoadmapDashboardData;
 public class DashboardService {
 
 	private final RoadmapDAO roadmapDAO;
-	private final SubjectDAO subjectDAO;
-	private final AITimetableDAO aiTimetableDAO;
+	private final StudyPlanDAO studyPlanDAO;
 
-	public DashboardService(RoadmapDAO roadmapDAO, SubjectDAO subjectDAO, AITimetableDAO aiTimetableDAO) {
+	public DashboardService(RoadmapDAO roadmapDAO, StudyPlanDAO studyPlanDAO) {
 
 		this.roadmapDAO = roadmapDAO;
-		this.subjectDAO = subjectDAO;
-		this.aiTimetableDAO = aiTimetableDAO;
+		this.studyPlanDAO = studyPlanDAO;
 	}
 
 	public DashboardData getDashboard(int userId, String userName) {
@@ -39,13 +37,11 @@ public class DashboardService {
 
 		for (Roadmap roadmap : roadmaps) {
 
-			int progress;
+			// Same rule as the schedule page: COMPLETED daily tasks / all daily tasks
+			int progress = getScheduleProgress(roadmap.getId());
 
 			if (roadmap.isAi()) {
-				progress = aiTimetableDAO.getAIProgress(roadmap.getId());
 				aiCount++;
-			} else {
-				progress = subjectDAO.getRoadmapProgress(roadmap.getId());
 			}
 
 			totalProgress += progress;
@@ -67,7 +63,7 @@ public class DashboardService {
 			roadmapData.add(data);
 		}
 
-		int avgProgress = total > 0 ? totalProgress / total : 0;
+		int avgProgress = total > 0 ? Math.round((float) totalProgress / total) : 0;
 
 		DashboardData dashboard = new DashboardData();
 
@@ -80,6 +76,29 @@ public class DashboardService {
 		dashboard.setRoadmaps(roadmapData);
 
 		return dashboard;
+	}
+
+	/**
+	 * Progress of the standard timetable (study_plan / daily_tasks), matching the
+	 * calculation in schedule.js.
+	 */
+	private int getScheduleProgress(int roadmapId) {
+
+		List<DailyTask> tasks = studyPlanDAO.getTasks(roadmapId);
+
+		if (tasks == null || tasks.isEmpty()) {
+			return 0;
+		}
+
+		int done = 0;
+
+		for (DailyTask task : tasks) {
+			if ("COMPLETED".equals(task.getStatus())) {
+				done++;
+			}
+		}
+
+		return Math.round(100f * done / tasks.size());
 	}
 
 	private String createInitials(String name) {

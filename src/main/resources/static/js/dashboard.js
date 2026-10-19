@@ -24,7 +24,10 @@
     update: (id, payload) => null,
 
     // Return { url, init } for the fetch() that deletes a roadmap, or null.
-    remove: (id) => null
+    remove: (id) => null,
+
+    // Same endpoint schedule.js uses. Progress = COMPLETED tasks / total tasks.
+    scheduleTasks: (id) => '/api/schedule/tasks?roadmapId=' + encodeURIComponent(id)
   };
 
   /* ── 2. HELPERS ──────────────────────────────────────────────────── */
@@ -79,13 +82,46 @@
       if (!response.ok) throw new Error('Failed to load dashboard');
 
       const data = await response.json();
+      const roadmaps = data.roadmaps || [];
+      await applyScheduleProgress(roadmaps);
+      recomputeStats(data, roadmaps);
+
       renderUser(data);
       renderStats(data);
-      renderRoadmaps(data.roadmaps || []);
+      renderRoadmaps(roadmaps);
     } catch (error) {
       console.error('Dashboard loading error:', error);
       showGridMessage('Could not load your dashboard. Please refresh the page.');
     }
+  }
+
+  /* ── 4b. PROGRESS FROM THE SCHEDULE (same method as schedule.js) ───
+     For each roadmap: progress = round(100 * COMPLETED tasks / all tasks).
+     If a request fails, that roadmap keeps the value from /api/dashboard. */
+
+  async function applyScheduleProgress(roadmaps) {
+    await Promise.all(roadmaps.map(async (r) => {
+      try {
+        const res = await fetch(ENDPOINTS.scheduleTasks(r.id), {
+          headers: { Accept: 'application/json' },
+          credentials: 'same-origin'
+        });
+        if (res.status === 401) { window.location.href = ROUTES.login; return; }
+        if (!res.ok) return;
+        const tasks = await res.json();
+        if (!Array.isArray(tasks)) return;
+        const done = tasks.filter((t) => t.status === 'COMPLETED').length;
+        r.progress = tasks.length > 0 ? Math.round(100 * done / tasks.length) : 0;
+      } catch (_) { /* keep the dashboard's own value */ }
+    }));
+  }
+
+  // Keep the stat cards consistent with the card bars.
+  function recomputeStats(data, roadmaps) {
+    if (roadmaps.length === 0) return;
+    const values = roadmaps.map((r) => clampPercent(r.progress));
+    data.avgProgress = Math.round(values.reduce((a, b) => a + b, 0) / values.length);
+    data.completed = values.filter((p) => p >= 100).length;
   }
 
   /* ── 5. RENDER: USER & STATS ─────────────────────────────────────── */
@@ -128,6 +164,11 @@
 
   function createRoadmapCard(roadmap) {
     const frag = tpl('roadmapCardTemplate');
+    const hasProgress = roadmap.progress !== null && roadmap.progress !== undefined &&
+      Number.isFinite(Number(roadmap.progress));
+    if (!hasProgress) {
+      console.warn('Roadmap ' + roadmap.id + ' has no numeric "progress" in the /api/dashboard response.');
+    }
     const progress = clampPercent(roadmap.progress);
     const isDone = progress >= 100;
 
@@ -143,7 +184,7 @@
     descEl.textContent = roadmap.description || '';
 
     // Progress (animate from 0 so the CSS transition runs)
-    frag.querySelector('[data-progress-text]').textContent = progress + '%';
+    frag.querySelector('[data-progress-text]').textContent = hasProgress ? progress + '%' : '—';
     const fill = frag.querySelector('[data-progress-fill]');
     fill.classList.add(progressTier(progress));
     fill.style.width = '0%';
