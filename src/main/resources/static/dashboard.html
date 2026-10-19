@@ -1,334 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | DevTracker</title>
 
-    <title>Dashboard | DevTracker</title>
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/animation.css">
+<link rel="stylesheet" href="/css/auth.css">
+<link rel="stylesheet" href="/css/loading.css">
+<!-- Paste the dashboard CSS from dashboard.jsp into /css/dashboard.css -->
+<link rel="stylesheet" href="/css/dashboard.css">
 
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/animation.css">
-    <link rel="stylesheet" href="/css/auth.css">
-    <link rel="stylesheet" href="/css/loading.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
 
 <body>
 
-<!-- Mobile top bar -->
-<div class="mobile-topbar">
-    <a class="mobile-logo" href="/dashboard.html">
-        <i class="ti ti-route"></i>
-        DevTracker
-    </a>
-</div>
-
-<div class="layout">
-
-    <!-- Sidebar -->
-    <aside class="sidebar">
-
-        <div class="sidebar-logo">
-            <a class="logo-mark" href="/dashboard.html">
-                <i class="ti ti-route"></i>
-
-                <div>
-                    <div>DevTracker</div>
-                    <div class="logo-sub">Learning OS</div>
-                </div>
-            </a>
-        </div>
-
-        <nav class="nav">
-
-            <div class="nav-section-label">Menu</div>
-
-            <a class="nav-item active" href="/dashboard.html">
-                <i class="ti ti-layout-dashboard"></i>
-                Dashboard
-            </a>
-
-            <a class="nav-item" href="/create-roadmap.html">
-                <i class="ti ti-map"></i>
-                Create Roadmap
-            </a>
-
-            <div class="nav-section-label">Manage</div>
-
-            <a class="nav-item" href="/trash.html">
-                <i class="ti ti-recycle"></i>
-                Recover Deleted
-            </a>
-
-        </nav>
-
-        <div class="sidebar-footer">
-
-            <div class="user-row">
-
-                <div class="avatar" id="initials">
-                    --
-                </div>
-
-                <div class="user-info">
-
-                    <div class="user-name" id="sidebarUserName">
-                        Loading...
-                    </div>
-
-                    <div class="user-plan">
-                        Free plan
-                    </div>
-
-                </div>
-
-                <a href="/logout"
-                   class="logout-btn"
-                   title="Logout">
-
-                    <i class="ti ti-logout"></i>
-
-                </a>
-
-            </div>
-
-        </div>
-
-    </aside>
-
-
-    <!-- Main -->
-    <main class="main">
-
-        <!-- Greeting -->
-        <div class="greeting-strip">
-
-            <div class="greeting-text">
-
-                <h2>
-                    Welcome back,
-                    <span id="welcomeName">...</span>
-                    👋
-                </h2>
-
-                <p>
-                    Here's your learning progress at a glance.
-                </p>
-
-            </div>
-
-            <div class="greeting-actions">
-
-                <a href="/create-roadmap.html"
-                   class="btn btn-primary">
-
-                    <i class="ti ti-plus"></i>
-                    New Roadmap
-
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <!-- Stats -->
-        <div class="stats-grid">
-
-            <div class="stat-card">
-
-                <div class="stat-icon si-amber">
-                    <i class="ti ti-map"></i>
-                </div>
-
-                <div class="stat-body">
-
-                    <div class="stat-val"
-                         id="totalRoadmaps">
-                        0
-                    </div>
-
-                    <div class="stat-label">
-                        Total roadmaps
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon si-signal">
-                    <i class="ti ti-trending-up"></i>
-                </div>
-
-                <div class="stat-body">
-
-                    <div class="stat-val"
-                         id="avgProgress">
-                        0%
-                    </div>
-
-                    <div class="stat-label">
-                        Avg. progress
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon si-green">
-                    <i class="ti ti-circle-check"></i>
-                </div>
-
-                <div class="stat-body">
-
-                    <div class="stat-val"
-                         id="completedRoadmaps">
-                        0
-                    </div>
-
-                    <div class="stat-label">
-                        Completed
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon si-muted">
-                    <i class="ti ti-robot"></i>
-                </div>
-
-                <div class="stat-body">
-
-                    <div class="stat-val"
-                         id="aiCount">
-                        0
-                    </div>
-
-                    <div class="stat-label">
-                        AI generated
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- Roadmaps -->
-        <div>
-
-            <div class="section-hd">
-
-                <h2>Your roadmaps</h2>
-
-                <span id="roadmapCount">
-                    0 active
-                </span>
-
-            </div>
-
-
-            <div class="card-grid"
-                 id="roadmapGrid">
-
-                <!-- JavaScript inserts roadmap cards here -->
-
-            </div>
-
-        </div>
-
-    </main>
-
-</div>
-
-
-<!-- Mobile bottom navigation -->
-<nav class="bottom-nav">
-
-    <a class="bn-item active"
-       href="/dashboard.html">
-
-        <i class="ti ti-layout-dashboard"></i>
-        Dashboard
-
-    </a>
-
-    <a class="bn-item"
-       href="/create-roadmap.html">
-
-        <i class="ti ti-plus"></i>
-        New Roadmap
-
-    </a>
-
-    <a class="bn-item"
-       href="/trash.html">
-
-        <i class="ti ti-recycle"></i>
-        Deleted
-
-    </a>
-
-</nav>
-
-
-<!-- Loading -->
-<div id="loadingContainer"></div>
-
-<script>
-/* ── Inline edit ── */
-function enableEdit(id) {
-  document.getElementById("editForm"  + id).style.display = "flex";
-  document.getElementById("titleText" + id).style.display = "none";
-  document.getElementById("descText"  + id).style.display = "none";
-  document.getElementById("deleteForm"+ id).style.display = "block";
-}
-function cancelEdit(id) {
-  document.getElementById("editForm"  + id).style.display = "none";
-  document.getElementById("titleText" + id).style.display = "block";
-  document.getElementById("descText"  + id).style.display = "block";
-  document.getElementById("deleteForm"+ id).style.display = "none";
-}
-
-/* ── Animate progress bars on load ── */
-document.addEventListener('DOMContentLoaded', function () {
-  var bars = document.querySelectorAll('.progress-fill[data-target]');
-  // Small delay so the CSS transition fires after paint
-  requestAnimationFrame(function () {
-    setTimeout(function () {
-      bars.forEach(function (bar) {
-        bar.style.width = bar.dataset.target + '%';
-      });
-    }, 120);
-  });
-});
-
-</script><script>
-window.addEventListener("DOMContentLoaded", async () => {
-
-    const res = await fetch("includes/loading.html");
-    const html = await res.text();
-
-    document.getElementById("loadingContainer").innerHTML = html;
-
-});
-</script>
-<script src="/js/dashboard.js"></script>
-<script src="/js/loading.js"></script>
-
+	<!-- Mobile top bar -->
+	<div class="mobile-topbar">
+		<a class="mobile-logo" href="/dashboard.html"> <i class="ti ti-route"></i> DevTracker
+		</a>
+	</div>
+
+	<div class="layout">
+
+		<!-- Sidebar -->
+		<aside class="sidebar" id="sidebar">
+			<div class="sidebar-logo">
+				<a class="logo-mark" href="/dashboard.html"> <i class="ti ti-route"></i>
+					<div>
+						<div>DevTracker</div>
+						<div class="logo-sub">Learning OS</div>
+					</div>
+				</a>
+			</div>
+
+			<nav class="nav" aria-label="Main navigation">
+				<div class="nav-section-label">Menu</div>
+				<a class="nav-item active" href="/dashboard.html" aria-current="page"> <i class="ti ti-layout-dashboard"></i> Dashboard
+				</a> <a class="nav-item" href="/create-roadmap.html"> <i class="ti ti-map"></i> Create Roadmap
+				</a>
+
+				<div class="nav-section-label">Manage</div>
+				<a class="nav-item" href="/trash.html"> <i class="ti ti-recycle"></i> Recover Deleted
+				</a>
+			</nav>
+
+			<div class="sidebar-footer">
+				<div class="user-row">
+					<div class="avatar" id="initials">--</div>
+					<div class="user-info">
+						<div class="user-name" id="sidebarUserName">Loading...</div>
+						<div class="user-plan">Free plan</div>
+					</div>
+					<a href="/logout" class="logout-btn" title="Logout" aria-label="Logout"> <i class="ti ti-logout"></i>
+					</a>
+				</div>
+			</div>
+		</aside>
+
+		<!-- Main content -->
+		<main class="main">
+
+			<!-- Greeting strip -->
+			<div class="greeting-strip">
+				<div class="greeting-text">
+					<h2>
+						Welcome back, <span id="welcomeName">...</span> 👋
+					</h2>
+					<p>Here's your learning progress at a glance.</p>
+				</div>
+				<div class="greeting-actions">
+					<a href="/create-roadmap.html" class="btn btn-primary"> <i class="ti ti-plus"></i> New Roadmap
+					</a>
+				</div>
+			</div>
+
+			<!-- Stats -->
+			<div class="stats-grid">
+				<div class="stat-card">
+					<div class="stat-icon si-amber">
+						<i class="ti ti-map"></i>
+					</div>
+					<div class="stat-body">
+						<div class="stat-val" id="totalRoadmaps">0</div>
+						<div class="stat-label">Total roadmaps</div>
+					</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-icon si-signal">
+						<i class="ti ti-trending-up"></i>
+					</div>
+					<div class="stat-body">
+						<div class="stat-val" id="avgProgress">0%</div>
+						<div class="stat-label">Avg. progress</div>
+					</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-icon si-green">
+						<i class="ti ti-circle-check"></i>
+					</div>
+					<div class="stat-body">
+						<div class="stat-val" id="completedRoadmaps">0</div>
+						<div class="stat-label">Completed</div>
+					</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-icon si-muted">
+						<i class="ti ti-robot"></i>
+					</div>
+					<div class="stat-body">
+						<div class="stat-val" id="aiCount">0</div>
+						<div class="stat-label">AI generated</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Roadmaps section -->
+			<section>
+				<div class="section-hd">
+					<h2>Your roadmaps</h2>
+					<span id="roadmapCount">0 active</span>
+				</div>
+
+				<!-- Cards are rendered here from the templates below -->
+				<div class="card-grid" id="roadmapGrid"></div>
+			</section>
+
+			<!-- ===== Templates (inert until cloned by JS) ===== -->
+
+			<!-- Roadmap card -->
+			<template id="roadmapCardTemplate">
+				<div class="card" data-roadmap-card>
+
+					<div class="card-head">
+						<div class="card-head-left">
+							<div class="card-badges" data-badges></div>
+							<div class="card-title" data-title></div>
+						</div>
+						<button type="button" class="card-edit-btn" title="Edit" aria-label="Edit roadmap" data-edit-btn>
+							<i class="ti ti-pencil"></i>
+						</button>
+					</div>
+
+					<p class="card-desc" data-desc></p>
+
+					<!-- Inline edit form (hidden until Edit is clicked) -->
+					<form class="edit-form" data-edit-form>
+						<input type="text" name="title" placeholder="Roadmap title" required>
+						<textarea name="description" rows="3" placeholder="Description"></textarea>
+						<div class="edit-form-btns">
+							<button type="submit" class="btn btn-primary btn-xs">
+								<i class="ti ti-check"></i> Save
+							</button>
+							<button type="button" class="btn btn-xs" data-cancel-btn>Cancel</button>
+						</div>
+					</form>
+
+					<div class="card-bottom">
+						<div>
+							<div class="progress-row">
+								<span>Progress</span> <strong data-progress-text>0%</strong>
+							</div>
+							<div class="progress-track">
+								<div class="progress-fill" data-progress-fill></div>
+							</div>
+						</div>
+
+						<div class="date-row">
+							<i class="ti ti-calendar"></i> <span data-dates></span>
+						</div>
+
+						<div class="card-actions">
+							<a class="btn btn-sm" data-syllabus-link href="#"> <i class="ti ti-map"></i> Syllabus
+							</a> <a class="btn btn-sm" data-schedule-link href="#"> <i class="ti ti-calendar-event"></i> Daily Task
+							</a>
+							<!-- Delete (revealed together with the edit form, as in V1) -->
+							<form class="delete-form" data-delete-form>
+								<button type="submit" class="btn btn-sm btn-danger">
+									<i class="ti ti-trash"></i> Delete
+								</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</template>
+
+			<!-- Badges -->
+			<template id="badgeAiTemplate">
+				<span class="badge badge-ai"><i class="ti ti-sparkles"></i> AI</span>
+			</template>
+			<template id="badgeDoneTemplate">
+				<span class="badge badge-done"><i class="ti ti-check"></i> Completed</span>
+			</template>
+
+			<!-- "Start a new roadmap" card -->
+			<template id="newRoadmapCardTemplate">
+				<a class="card-empty" href="/create-roadmap.html"> <i class="ti ti-plus"></i>
+					<p>Start a new roadmap</p>
+				</a>
+			</template>
+
+			<!-- Empty / error message -->
+			<template id="gridMessageTemplate">
+				<p class="empty-message" data-message></p>
+			</template>
+
+		</main>
+	</div>
+
+	<!-- Bottom tab bar (mobile only) -->
+	<nav class="bottom-nav" aria-label="Mobile navigation">
+		<a class="bn-item active" href="/dashboard.html" aria-current="page"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+		<a class="bn-item" href="/create-roadmap.html"><i class="ti ti-plus"></i>New Roadmap</a>
+		<a class="bn-item" href="/trash.html"><i class="ti ti-recycle"></i>Deleted</a>
+	</nav>
+
+	<!-- Loading UI mount point -->
+	<div id="loadingContainer"></div>
+
+	<script src="/js/loading.js"></script>
+	<script src="/js/dashboard.js"></script>
 </body>
 </html>

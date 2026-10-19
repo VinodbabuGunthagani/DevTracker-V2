@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Schedule | DevTracker</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/syllabus.css">
+<link rel="stylesheet" href="css/loading.css">
+<link rel="stylesheet" href="css/animation.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+</head>
+<body>
+
+	<!-- Mobile top bar -->
+	<header class="mobile-topbar">
+		<a class="mobile-logo" id="mobileLogo" data-route="dashboard" href="#">
+			<i class="ti ti-route"></i> DevTracker
+		</a>
+		<button type="button" class="hamburger" id="openSidebarBtn" aria-label="Open navigation menu" aria-controls="sidebar" aria-expanded="false">
+			<i class="ti ti-menu-2"></i>
+		</button>
+	</header>
+
+	<!-- Mobile sidebar overlay -->
+	<div class="overlay" id="overlay"></div>
+
+	<div class="layout">
+
+		<!-- Sidebar -->
+		<aside class="sidebar" id="sidebar">
+			<div class="sidebar-logo">
+				<a class="logo-mark" data-route="dashboard" href="#">
+					<i class="ti ti-route"></i>
+					<div>
+						<div>DevTracker</div>
+						<div class="logo-sub">Learning OS</div>
+					</div>
+				</a>
+			</div>
+
+			<nav class="nav" aria-label="Main navigation">
+				<div class="nav-section-label">Menu</div>
+				<a class="nav-item" data-route="dashboard" href="#"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+				<a class="nav-item" data-route="createRoadmap" href="#"><i class="ti ti-plus"></i> Create Roadmap</a>
+				<a class="nav-item" id="navSyllabus" data-route="syllabus" href="#"><i class="ti ti-books"></i> Syllabus</a>
+				<a class="nav-item active" href="#" aria-current="page"><i class="ti ti-calendar-week"></i> Daily Tasks</a>
+
+				<div class="nav-section-label">Manage</div>
+				<a class="nav-item" data-route="trash" href="#"><i class="ti ti-recycle"></i> Recover Deleted</a>
+			</nav>
+
+			<div class="sidebar-footer">
+				<div class="user-row">
+					<div class="avatar">
+						<i class="ti ti-user"></i>
+					</div>
+					<div class="user-info">
+						<div class="user-name" id="userName"></div>
+						<div class="user-plan">Free plan</div>
+					</div>
+					<a href="#" class="logout-btn" id="logoutBtn" title="Logout" aria-label="Logout"><i class="ti ti-logout"></i></a>
+				</div>
+			</div>
+		</aside>
+
+		<main class="main">
+
+			<!-- Hero -->
+			<header class="syllabus-hero" id="scheduleHero">
+				<nav class="hero-breadcrumb" aria-label="Breadcrumb">
+					<a data-route="dashboard" href="#">Dashboard</a>
+					<i class="ti ti-chevron-right"></i>
+					<span>Study Schedule</span>
+				</nav>
+				<h1 class="hero-title">📅 Study Schedule</h1>
+				<p class="hero-desc">Your daily learning mission 🚀</p>
+
+				<div class="hero-overall">
+					<div class="hero-overall-track" role="progressbar" id="heroProgressTrack" aria-label="Overall schedule progress" aria-valuemin="0" aria-valuemax="100">
+						<div class="hero-overall-fill" id="heroProgressFill"></div>
+					</div>
+					<span class="hero-overall-text" id="heroProgressText">— complete</span>
+				</div>
+
+				<div class="hero-stats" id="heroStats">
+					<div class="hero-stat">
+						<span class="hero-stat-val" id="totalTasksVal">—</span>
+						<span class="hero-stat-label">Tasks</span>
+					</div>
+					<div class="hero-stat">
+						<span class="hero-stat-val" id="completedVal">—</span>
+						<span class="hero-stat-label">Done</span>
+					</div>
+					<div class="hero-stat">
+						<span class="hero-stat-val" id="remainingVal">—</span>
+						<span class="hero-stat-label">Remaining</span>
+					</div>
+					<div class="hero-stat">
+						<span class="hero-stat-val" id="progressVal">—</span>
+						<span class="hero-stat-label">Progress</span>
+					</div>
+				</div>
+			</header>
+
+			<!-- Toolbar -->
+			<div class="syllabus-toolbar">
+				<span class="syllabus-toolbar-label">Schedule</span>
+				<div class="toolbar-actions">
+					<a class="btn btn-sm" id="syllabusBtn" data-route="syllabus" href="#"><i class="ti ti-books"></i> Syllabus</a>
+					<a class="btn btn-sm" data-route="dashboard" href="#"><i class="ti ti-arrow-left"></i> Back</a>
+				</div>
+			</div>
+
+			<!-- Page states (JS will show/hide with the hidden attribute) -->
+			<div class="empty-state" id="scheduleLoading" role="status" aria-live="polite">Loading schedule…</div>
+			<div class="empty-state" id="scheduleError" role="alert" hidden></div>
+			<div class="empty-state" id="scheduleEmpty" hidden>No study schedule has been generated for this roadmap yet.</div>
+
+			<!-- Planner: one .subject-block per day is rendered here from #dayGroupTemplate -->
+			<section class="planner-container" id="plannerContainer" aria-label="Daily study schedule" hidden></section>
+
+			<!-- Expand / collapse all days -->
+			<button type="button" class="fab-expand" id="expandToggleBtnDays" hidden>
+				<i class="ti ti-chevrons-up"></i>
+				<span>Collapse all</span>
+			</button>
+
+			<!-- Loading UI mount point (populated by JS step) -->
+			<div id="loadingContainer"></div>
+
+			<!-- ===== Reusable templates (inert until cloned by JS) ===== -->
+
+			<!-- Day group -->
+			<template id="dayGroupTemplate">
+				<div class="subject-block" data-day-block>
+					<div class="subject-header" data-day-header role="button" tabindex="0" aria-expanded="false">
+						<div class="subject-index">
+							<i class="ti ti-calendar-event"></i>
+						</div>
+						<div class="subject-header-left">
+							<span class="subject-name">📅 <span data-day-date></span></span>
+						</div>
+						<div class="subject-meta">
+							<div class="subject-progress-box">
+								<span class="count-pill" data-day-count>Planned tasks</span>
+							</div>
+							<i class="ti ti-chevron-down chevron-icon"></i>
+						</div>
+					</div>
+					<div class="subject-body" data-day-body></div>
+				</div>
+			</template>
+
+			<!-- Task card -->
+			<template id="taskCardTemplate">
+				<article class="task-card" data-task-card>
+					<div class="time-pill">
+						🕘 <span data-task-minutes></span> min
+					</div>
+
+					<div class="task-path">
+						<div>📘 <span data-task-subject></span></div>
+						<div class="muted-text">└ 📌 <span data-task-topic></span></div>
+					</div>
+
+					<div class="task-main">
+						<button type="button" class="lesson-check-btn" data-task-check aria-label="Toggle task completion">
+							<i class="ti ti-circle" data-task-check-icon></i>
+						</button>
+						<span class="task-title-text" data-task-subtopic></span>
+						<a class="task-learn-btn" data-task-learn data-route="lesson" href="#">
+							<i class="ti ti-book-2"></i> Learn
+						</a>
+					</div>
+				</article>
+			</template>
+
+		</main>
+	</div>
+
+	<!-- Bottom tab bar (mobile only) -->
+	<nav class="bottom-nav" aria-label="Mobile navigation">
+		<a class="bn-item" data-route="dashboard" href="#"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+		<a class="bn-item" data-route="createRoadmap" href="#"><i class="ti ti-plus"></i>New</a>
+		<a class="bn-item" data-route="syllabus" href="#"><i class="ti ti-books"></i> Syllabus</a>
+		<a class="bn-item active" href="#" aria-current="page"><i class="ti ti-calendar-week"></i>Daily Tasks</a>
+	</nav>
+
+	<script src="js/schedule.js"></script>
+</body>
+</html>

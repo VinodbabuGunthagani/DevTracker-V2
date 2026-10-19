@@ -254,10 +254,91 @@
       h('div', { class: 'subtopic-edit-btns' },
         h('button', { class: 'btn btn-xs btn-primary', attrs: { type: 'submit' } }, icon('ti-plus'), document.createTextNode(' Add')),
         cancel));
-    btn.addEventListener('click', () => { btn.style.display = 'none'; form.style.display = 'flex'; });
-    cancel.addEventListener('click', () => { form.style.display = 'none'; btn.style.display = 'flex'; });
-    pendingForm(form, 'addSubTopic');
-    return [btn, form];
+		btn.addEventListener('click', () => {
+		    btn.style.display = 'none';
+		    form.style.display = 'flex';
+		    nameIn.focus();
+		});
+
+		cancel.addEventListener('click', () => {
+		    form.style.display = 'none';
+		    btn.style.display = 'flex';
+		    form.reset();
+		    mins.value = 60;
+		    sel.value = 'Medium';
+		});
+
+		form.addEventListener('submit', async (e) => {
+		    e.preventDefault();
+
+		    const name = nameIn.value.trim();
+		    const difficulty = sel.value;
+		    const minutes = Number(mins.value);
+
+		    if (!name) {
+		        nameIn.focus();
+		        return;
+		    }
+
+		    if (!Number.isInteger(minutes) || minutes < 1 || minutes > 1440) {
+		        alert('Study time must be between 1 and 1440 minutes.');
+		        mins.focus();
+		        return;
+		    }
+
+		    const submitBtn = form.querySelector('[type="submit"]');
+		    submitBtn.disabled = true;
+
+		    try {
+		        const response = await fetch(
+		            `/api/topics/${encodeURIComponent(topic.id)}/subtopics`,
+		            {
+		                method: 'POST',
+		                credentials: 'include',
+		                headers: {
+		                    'Content-Type': 'application/json',
+		                    'Accept': 'application/json'
+		                },
+		                body: JSON.stringify({
+		                    name,
+		                    difficulty,
+		                    minutes
+		                })
+		            }
+		        );
+
+		        if (!response.ok) {
+		            let message = `Failed to add lesson (${response.status})`;
+
+		            try {
+		                const errorData = await response.json();
+		                message = errorData.message || message;
+		            } catch (_) {
+		                // Keep the fallback message.
+		            }
+
+		            throw new Error(message);
+		        }
+
+		        // Fetch the latest roadmap and redraw without a full-page reload.
+		        const roadmapId = new URLSearchParams(location.search).get('id');
+		        const rm = normalizeRoadmap(await fetchRoadmap(roadmapId));
+		        const stats = computeStats(rm);
+
+		        renderHero(rm, stats);
+		        renderToolbar(stats);
+		        renderTree(rm);
+		        setAllOpen(true);
+
+		    } catch (error) {
+		        console.error('Add lesson error:', error);
+		        alert(error.message || 'Could not add the lesson. Please try again.');
+		    } finally {
+		        submitBtn.disabled = false;
+		    }
+		});
+
+		return [btn, form];
   }
 
   /* ── 8. RENDER: TOPICS ───────────────────────────────────────────── */
@@ -322,10 +403,77 @@
       icon('ti-plus', 'color: var(--accent); font-size: 14px; flex-shrink: 0'), input,
       h('button', { class: 'btn btn-xs btn-primary', attrs: { type: 'submit' } }, icon('ti-plus'), document.createTextNode(' Add topic')),
       cancel);
-    btn.addEventListener('click', () => { btn.style.display = 'none'; form.style.display = 'flex'; });
-    cancel.addEventListener('click', () => { form.style.display = 'none'; btn.style.display = 'flex'; });
-    pendingForm(form, 'addTopic');
-    return [btn, form];
+	  btn.addEventListener('click', () => {
+	      btn.style.display = 'none';
+	      form.style.display = 'flex';
+	      input.focus();
+	  });
+
+	  cancel.addEventListener('click', () => {
+	      form.style.display = 'none';
+	      btn.style.display = 'flex';
+	      form.reset();
+	  });
+
+	  form.addEventListener('submit', async (e) => {
+	      e.preventDefault();
+
+	      const name = input.value.trim();
+
+	      if (!name) {
+	          input.focus();
+	          return;
+	      }
+
+	      const submitBtn = form.querySelector('[type="submit"]');
+	      submitBtn.disabled = true;
+
+	      try {
+	          const response = await fetch(
+	              `/api/subjects/${encodeURIComponent(subject.id)}/topics`,
+	              {
+	                  method: 'POST',
+	                  credentials: 'include',
+	                  headers: {
+	                      'Content-Type': 'application/json',
+	                      'Accept': 'application/json'
+	                  },
+	                  body: JSON.stringify({ name })
+	              }
+	          );
+
+	          if (!response.ok) {
+	              let message = `Failed to add topic (${response.status})`;
+
+	              try {
+	                  const errorData = await response.json();
+	                  message = errorData.message || message;
+	              } catch (_) {
+	                  // Keep the fallback message if the response isn't JSON.
+	              }
+
+	              throw new Error(message);
+	          }
+
+	          // Reload the latest roadmap data without reloading the browser.
+	          const roadmapId = new URLSearchParams(location.search).get('id');
+	          const rm = normalizeRoadmap(await fetchRoadmap(roadmapId));
+	          const stats = computeStats(rm);
+
+	          renderHero(rm, stats);
+	          renderToolbar(stats);
+	          renderTree(rm);
+	          setAllOpen(true);
+
+	      } catch (error) {
+	          console.error('Add topic error:', error);
+	          alert(error.message || 'Could not add the topic. Please try again.');
+	      } finally {
+	          submitBtn.disabled = false;
+	      }
+	  });
+
+	  return [btn, form];
   }
 
   /* ── 9. RENDER: SUBJECTS ─────────────────────────────────────────── */
